@@ -421,7 +421,7 @@
     var promise = new Promise(function(resolve, reject) {
       var request = new Request(input, init)
 
-      xhr.onload = function() {
+      xhr.onreadystatechange = xhr.onload = function() {
         if (xhr.readyState !== 4) {
           return;
         }
