@@ -417,11 +417,14 @@
   self.Response = Response
 
   self.fetch = function(input, init) {
-    return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    var promise = new Promise(function(resolve, reject) {
       var request = new Request(input, init)
-      var xhr = new XMLHttpRequest()
 
       xhr.onload = function() {
+        if (xhr.readyState !== 4) {
+          return;
+        }
         var options = {
           status: xhr.status,
           statusText: xhr.statusText,
@@ -456,6 +459,10 @@
 
       xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
     })
+
+    promise.abort = xhr.abort.bind(xhr);
+
+    return promise;
   }
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
